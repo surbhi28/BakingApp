@@ -9,15 +9,19 @@ public class Recipe implements Parcelable {
 
     private int id;
     private String name;
-    private int servings;
     private List<Ingredients> ingredients ;
     private List<Steps> steps;
+    private int servings;
 
 
     public Recipe(Parcel source){
         id = source.readInt();
         name = source.readString();
         servings = source.readInt();
+        //this.ingredients = new ArrayList<Ingredients>();
+        //source.readList(this.ingredients,Ingredients.class.getClassLoader());
+        //this.steps = new ArrayList<Steps>();
+        //source.readList(this.steps,Steps.class.getClassLoader());
 
     }
 
@@ -87,6 +91,8 @@ public class Recipe implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(name);
         parcel.writeInt(servings);
+        //parcel.writeList(ingredients);
+        //parcel.writeList(steps);
 
 
 

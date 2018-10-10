@@ -62,8 +62,8 @@ public class Ingredients implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
 
         parcel.writeFloat(quantity);
-        parcel.writeString(ingredient);
         parcel.writeString(measure);
+        parcel.writeString(ingredient);
 
     }
 }

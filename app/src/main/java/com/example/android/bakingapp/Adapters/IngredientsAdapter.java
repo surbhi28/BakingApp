@@ -39,7 +39,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         float quantity = ingredientsList.get(position).getQuantity();
         String measure = ingredientsList.get(position).getMeasure();
         String ingredients = ingredientsList.get(position).getIngredient();
-        holder.ingredientsView.setText(String.valueOf(quantity) +"" +measure +"of " +ingredients);
+        holder.ingredientsView.setText(String.valueOf(quantity) +" " +measure +" of " +ingredients);
 
     }
 

@@ -81,8 +81,8 @@ public class Steps implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
 
         parcel.writeInt(id);
-        parcel.writeString(description);
         parcel.writeString(shortDescription);
+        parcel.writeString(description);
         parcel.writeString(videoURL);
         parcel.writeString(thumbnailURL);
 

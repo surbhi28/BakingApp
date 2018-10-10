@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
+
+    public static final String LOG_TAG = RecipeAdapter.class.getName();
 
     private Context context;
     List<Recipe> recipeList;
@@ -51,6 +54,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 Intent intent = new Intent(context,RecipeDetail.class);
                 intent.putParcelableArrayListExtra("IngredientsList",new ArrayList<Parcelable>(recipeList.get(holder.getAdapterPosition()).getIngredients()));
                 intent.putParcelableArrayListExtra("StepsList",new ArrayList<Parcelable>(recipeList.get(holder.getAdapterPosition()).getSteps()));
+                Log.d(LOG_TAG,"Value of StepsList " +recipeList.get(position).getSteps().get(1).getShortDescription());
                 context.startActivity(intent);
 
             }
