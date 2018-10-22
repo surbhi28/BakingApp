@@ -1,6 +1,9 @@
 package com.example.android.bakingapp;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,12 +17,15 @@ import com.example.android.bakingapp.Adapters.StepsAdapter;
 import com.example.android.bakingapp.ModalClasses.Ingredients;
 import com.example.android.bakingapp.ModalClasses.Steps;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecipeDetailFragment extends Fragment {
+public class RecipeDetailFragment extends Fragment implements StepsAdapter.StepItemClickListener {
+
+    private static final String LOG_TAG = RecipeDetailFragment.class.getName();
 
     @BindView(R.id.ingredients_recycler_view)
     RecyclerView recyclerViewIngredients;
@@ -28,32 +34,109 @@ public class RecipeDetailFragment extends Fragment {
     IngredientsAdapter ingredientsAdapter;
     StepsAdapter stepsAdapter;
 
+    List<Ingredients> ingredientsList ;
+    List<Steps> stepsList;
+    private boolean mTwoPane ;
+
+    private StepClickListener mStepClickListener;
+
     public RecipeDetailFragment(){}
+
+   public interface StepClickListener {
+        void onStepClick(int position);
+
+    }
+
+    @Override
+        public void onAttach(Context context){
+        super.onAttach(context);
+        try {
+            mStepClickListener = (StepClickListener)context;
+        }catch (ClassCastException e){
+            throw new ClassCastException(context.toString() + "must implement StepClickListener");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.recipe_detail_fragment,container,false);
-
         ButterKnife.bind(this,rootView);
+        return rootView;
 
-        List<Ingredients> list = getActivity().getIntent().getParcelableArrayListExtra("IngredientsList");
+    }
+
+    public void setIngredientsList(List<Ingredients> list){
+        ingredientsList = list;
+
+    }
+
+    public void setStepsList(List<Steps> list) {
+        stepsList = list;
+
+    }
+
+    public void setTwoPane(boolean mTwoPane) {
+        this.mTwoPane = mTwoPane;
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState == null){
+            setIngredientsAdapter();
+            setStepsAdapter();
+        }else {
+            stepsList = savedInstanceState.getParcelableArrayList("StepsList");
+            ingredientsList = savedInstanceState.getParcelableArrayList("IngredientsList");
+            mTwoPane = savedInstanceState.getBoolean("TwoPane");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState( Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("StepsList" , (ArrayList<Steps>) stepsList);
+        outState.putParcelableArrayList("IngredientsList", (ArrayList<Ingredients>) ingredientsList);
+        outState.putBoolean("TwoPane",mTwoPane);
+    }
+
+    @Override
+    public void onStepItemClicked(int clickedItemIndex) {
+        if(mTwoPane){
+            mStepClickListener.onStepClick(clickedItemIndex);
+        }else {
+            Intent intent = new Intent(getContext(), StepDetail.class);
+
+            intent.putParcelableArrayListExtra("StepsList",(ArrayList<Steps>)stepsList);
+            //intent.putExtra("Description",stepsList.get(clickedItemIndex).getDescription());
+            //Log.d(LOG_TAG, "Description" +stepsList.get(clickedItemIndex).getDescription());
+            //intent.putExtra("VideoUrl",stepsList.get(clickedItemIndex).getVideoURL());
+            intent.putExtra("Position",clickedItemIndex);
+            startActivity(intent);
+        }
+
+    }
+
+    public void setIngredientsAdapter(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerViewIngredients.setLayoutManager(linearLayoutManager);
-        DividerItemDecoration decoration1 = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-        recyclerViewIngredients.addItemDecoration(decoration1);
-        ingredientsAdapter = new IngredientsAdapter(getContext(),list);
+        DividerItemDecoration decoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        recyclerViewIngredients.addItemDecoration(decoration);
+        ingredientsAdapter = new IngredientsAdapter(getContext(),ingredientsList);
         recyclerViewIngredients.setAdapter(ingredientsAdapter);
 
+    }
+
+    public void setStepsAdapter(){
         List<Steps> stepsList = getActivity().getIntent().getParcelableArrayListExtra("StepsList");
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewSteps.setLayoutManager(layoutManager);
-        recyclerViewSteps.addItemDecoration(decoration1);
-        stepsAdapter = new StepsAdapter(getContext(),stepsList);
+        DividerItemDecoration decoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        recyclerViewSteps.addItemDecoration(decoration);
+        stepsAdapter = new StepsAdapter(stepsList,this);
         recyclerViewSteps.setAdapter(stepsAdapter);
-
-        return rootView;
-
 
     }
 }

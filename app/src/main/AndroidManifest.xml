@@ -20,6 +20,7 @@
         </activity>
 
         <activity android:name=".RecipeDetail"/>
+        <activity android:name=".StepDetail"/>
     </application>
 
 </manifest>

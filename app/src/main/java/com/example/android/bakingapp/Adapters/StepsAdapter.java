@@ -16,12 +16,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHolder>{
+
+    final private StepItemClickListener mClickListener ;
     Context context;
     List<Steps> stepsList;
 
-    public StepsAdapter(Context context , List<Steps> list){
-        this.context = context;
+    public StepsAdapter(List<Steps> list , StepItemClickListener clickListener){
         stepsList = list;
+        mClickListener = clickListener;
+    }
+
+    public interface StepItemClickListener{
+        void onStepItemClicked(int position);
     }
 
     @Override
@@ -33,7 +39,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
     }
 
     @Override
-    public void onBindViewHolder(StepsViewHolder holder, int position) {
+    public void onBindViewHolder(final StepsViewHolder holder, final int position) {
         String description = stepsList.get(position).getShortDescription();
         holder.descriptionView.setText(description);
 
@@ -41,16 +47,24 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
 
     @Override
     public int getItemCount() {
-        return 0;
+        if(stepsList == null) {return 0;}
+        return stepsList.size();
     }
 
-    public class StepsViewHolder extends RecyclerView.ViewHolder {
+    public class StepsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.short_description_view)
         TextView descriptionView;
 
         public StepsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            mClickListener.onStepItemClicked(position);
         }
     }
 }
