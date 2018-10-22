@@ -62,17 +62,17 @@ public class StepsDetailFragment extends Fragment {
 
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
+    /*   @Override
+       public void onCreate(Bundle savedInstanceState) {
+           super.onCreate(savedInstanceState);
+           setRetainInstance(true);
+       }
 
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-    }
-
+       @Override
+       public void onViewStateRestored(Bundle savedInstanceState) {
+           super.onViewStateRestored(savedInstanceState);
+       }
+   */
     @Override
     public void onStart() {
         super.onStart();
@@ -116,7 +116,7 @@ public class StepsDetailFragment extends Fragment {
     private void startPlayer() {
 
         // Create an instance of the ExoPlayer.
-        //TrackSelection.Factory factory = new AdaptiveTrackSelection.Factory(new DefaultBandwidthMeter());
+
         DefaultTrackSelector trackSelector = new DefaultTrackSelector();
         DefaultLoadControl loadControl = new DefaultLoadControl();
         player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getActivity()), trackSelector, loadControl);
