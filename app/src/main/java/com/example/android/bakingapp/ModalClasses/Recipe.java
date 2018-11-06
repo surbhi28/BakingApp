@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.util.List;
 
+
 public class Recipe implements Parcelable {
 
     private int id;
@@ -12,7 +13,6 @@ public class Recipe implements Parcelable {
     private List<Ingredients> ingredients ;
     private List<Steps> steps;
     private int servings;
-
 
     public Recipe(Parcel source){
         id = source.readInt();

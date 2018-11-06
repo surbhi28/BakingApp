@@ -34,17 +34,27 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.StepI
     IngredientsAdapter ingredientsAdapter;
     StepsAdapter stepsAdapter;
 
-    List<Ingredients> ingredientsList ;
-    List<Steps> stepsList;
-    private boolean mTwoPane ;
+    public static List<Ingredients> ingredientsList;
+    public static List<Steps> stepsList;
+    public static boolean mTwoPane;
 
     private StepClickListener mStepClickListener;
 
     public RecipeDetailFragment(){}
 
-   public interface StepClickListener {
-        void onStepClick(int position);
-
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState == null) {
+            setIngredientsAdapter();
+            setStepsAdapter();
+        } else {
+            stepsList = savedInstanceState.getParcelableArrayList("StepsList");
+            ingredientsList = savedInstanceState.getParcelableArrayList("IngredientsList");
+            mTwoPane = savedInstanceState.getBoolean("TwoPane");
+            setIngredientsAdapter();
+            setStepsAdapter();
+        }
     }
 
     @Override
@@ -63,35 +73,22 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.StepI
         View rootView = inflater.inflate(R.layout.recipe_detail_fragment,container,false);
         ButterKnife.bind(this,rootView);
         return rootView;
-
     }
 
     public void setIngredientsList(List<Ingredients> list){
         ingredientsList = list;
-
     }
 
     public void setStepsList(List<Steps> list) {
         stepsList = list;
-
     }
 
     public void setTwoPane(boolean mTwoPane) {
         this.mTwoPane = mTwoPane;
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState == null){
-            setIngredientsAdapter();
-            setStepsAdapter();
-        }else {
-            stepsList = savedInstanceState.getParcelableArrayList("StepsList");
-            ingredientsList = savedInstanceState.getParcelableArrayList("IngredientsList");
-            mTwoPane = savedInstanceState.getBoolean("TwoPane");
-        }
+    public interface StepClickListener {
+        void onStepClick(int position);
     }
 
     @Override
@@ -108,15 +105,10 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.StepI
             mStepClickListener.onStepClick(clickedItemIndex);
         }else {
             Intent intent = new Intent(getContext(), StepDetail.class);
-
             intent.putParcelableArrayListExtra("StepsList",(ArrayList<Steps>)stepsList);
-            //intent.putExtra("Description",stepsList.get(clickedItemIndex).getDescription());
-            //Log.d(LOG_TAG, "Description" +stepsList.get(clickedItemIndex).getDescription());
-            //intent.putExtra("VideoUrl",stepsList.get(clickedItemIndex).getVideoURL());
             intent.putExtra("Position",clickedItemIndex);
             startActivity(intent);
         }
-
     }
 
     public void setIngredientsAdapter(){
@@ -126,17 +118,14 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.StepI
         recyclerViewIngredients.addItemDecoration(decoration);
         ingredientsAdapter = new IngredientsAdapter(getContext(),ingredientsList);
         recyclerViewIngredients.setAdapter(ingredientsAdapter);
-
     }
 
     public void setStepsAdapter(){
-        List<Steps> stepsList = getActivity().getIntent().getParcelableArrayListExtra("StepsList");
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewSteps.setLayoutManager(layoutManager);
         DividerItemDecoration decoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
         recyclerViewSteps.addItemDecoration(decoration);
         stepsAdapter = new StepsAdapter(stepsList,this);
         recyclerViewSteps.setAdapter(stepsAdapter);
-
     }
 }

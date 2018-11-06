@@ -117,23 +117,21 @@ public class StepsDetailFragment extends Fragment {
 
         // Create an instance of the ExoPlayer.
 
-        DefaultTrackSelector trackSelector = new DefaultTrackSelector();
-        DefaultLoadControl loadControl = new DefaultLoadControl();
-        player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getActivity()), trackSelector, loadControl);
-
+        player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getContext()), new DefaultTrackSelector(), new DefaultLoadControl());
         playerView.setPlayer(player);
+        player.setPlayWhenReady(playWhenReady);
+        player.seekTo(currentWindow, playbackPosition);
 
         // Prepare the MediaSource.
         String userAgent = Util.getUserAgent(getActivity(), "BakingApp");
         //DefaultHttpDataSourceFactory factory1 = new DefaultHttpDataSourceFactory(userAgent,null,DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,true);
         DefaultDataSourceFactory dataSource = new DefaultDataSourceFactory(getContext(), userAgent);
+        //DefaultHttpDataSourceFactory dataSource = new DefaultHttpDataSourceFactory(userAgent);
 
         Uri uri = Uri.parse(videoUrl);
         ExtractorMediaSource mediaSource = new ExtractorMediaSource.Factory(dataSource)
                 .createMediaSource(uri);
         player.prepare(mediaSource);
-        player.setPlayWhenReady(playWhenReady);
-
 
     }
 
