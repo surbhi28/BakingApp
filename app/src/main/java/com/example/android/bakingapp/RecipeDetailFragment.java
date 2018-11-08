@@ -57,6 +57,7 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.StepI
         }
     }
 
+
     @Override
         public void onAttach(Context context){
         super.onAttach(context);
