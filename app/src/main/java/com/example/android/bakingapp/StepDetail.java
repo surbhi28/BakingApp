@@ -5,8 +5,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.example.android.bakingapp.ModalClasses.Steps;
+import com.firebase.ui.auth.AuthUI;
 
 import java.util.ArrayList;
 
@@ -40,5 +44,23 @@ public class StepDetail extends AppCompatActivity {
             fragmentManager.beginTransaction().add(R.id.container_two, stepsDetailFragment).commit();
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_sign_out,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.sign_out:
+                AuthUI.getInstance().signOut(this);
+                return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+        }
     }
 }

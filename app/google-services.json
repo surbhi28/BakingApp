@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "40186143587",
+    "firebase_url": "https://bakeapp-8d7a2.firebaseio.com",
+    "project_id": "bakeapp-8d7a2",
+    "storage_bucket": "bakeapp-8d7a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40186143587:android:3aac7194fe933611",
+        "android_client_info": {
+          "package_name": "com.example.android.bakingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "40186143587-kldgkvhnjm1r0c40v58kjod8og1i3bb7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.bakingapp",
+            "certificate_hash": "a615401048cce88d28b1ede40267474cc4b88ed1"
+          }
+        },
+        {
+          "client_id": "40186143587-pcjm9c7fn506rc7l4bm1njih3ps0touq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN-9pJON0ZoUloHfW23lRlt5NIqtNj-lc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "40186143587-pcjm9c7fn506rc7l4bm1njih3ps0touq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
