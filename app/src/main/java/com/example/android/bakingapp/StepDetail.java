@@ -1,5 +1,6 @@
 package com.example.android.bakingapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -58,6 +59,7 @@ public class StepDetail extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.sign_out:
                 AuthUI.getInstance().signOut(this);
+                startActivity(new Intent(this,MainActivity.class));
                 return true;
                 default:
                     return super.onOptionsItemSelected(item);
