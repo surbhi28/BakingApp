@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
