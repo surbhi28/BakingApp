@@ -9,11 +9,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.android.bakingapp.Adapters.RecipeAdapter;
 import com.example.android.bakingapp.ModalClasses.Recipe;
 import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -25,12 +27,16 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static FirebaseAnalytics mFirebaseAnalytics;
     private FirebaseAuth mFirebaseAuth;
+
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
 
     @BindView(R.id.recycler_view_recipes)
     RecyclerView recyclerView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +44,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        //viewModal();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -52,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
                     viewModal();
+                    toolbar.setTitle(R.string.message +user.getDisplayName());
                 }else {
                     startActivityForResult(
                             AuthUI.getInstance()
@@ -74,7 +84,12 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Signed In", Toast.LENGTH_SHORT).show();
+                String name = mFirebaseAuth.getCurrentUser().getDisplayName();
+                Toast.makeText(this, "Signed In " +mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
+                mFirebaseAnalytics.setUserProperty("user_name",name);
+               // Bundle bundle = new Bundle();
+               // bundle.putString("user_name", mFirebaseAuth.getCurrentUser().getDisplayName());
+               // mFirebaseAnalytics.logEvent("names_of_users", bundle);
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Signed In Cancelled", Toast.LENGTH_SHORT).show();
                 finish();

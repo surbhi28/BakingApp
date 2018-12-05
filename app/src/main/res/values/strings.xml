@@ -3,4 +3,5 @@
     <string name="appwidget_text">RECIPES</string>
     <string name="add_widget">Add widget</string>
     <string name="sign_out">SignOut</string>
+    <string name="message">Welcome </string>
 </resources>
