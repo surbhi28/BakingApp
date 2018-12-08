@@ -1,5 +1,6 @@
 package com.example.android.bakingapp;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.android.bakingapp.Adapters.RecipeAdapter;
+import com.example.android.bakingapp.Database.FavouriteDatabase;
+import com.example.android.bakingapp.Database.FavouriteEntry;
 import com.example.android.bakingapp.ModalClasses.Recipe;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static FirebaseAnalytics mFirebaseAnalytics;
     private FirebaseAuth mFirebaseAuth;
+    private RecipeAdapter recipeAdapter;
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
@@ -47,11 +51,13 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this );
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
+        recipeAdapter = new RecipeAdapter(getApplicationContext());
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -59,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
                     viewModal();
-                    toolbar.setTitle(R.string.message +user.getDisplayName());
+                    toolbar.setTitle(getString(R.string.message) + user.getDisplayName());
                 }else {
                     startActivityForResult(
                             AuthUI.getInstance()
@@ -83,13 +89,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 String name = mFirebaseAuth.getCurrentUser().getDisplayName();
-                Toast.makeText(this, "Signed In " +mFirebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.sign_in), Toast.LENGTH_SHORT).show();
                 mFirebaseAnalytics.setUserProperty("user_name",name);
-               // Bundle bundle = new Bundle();
-               // bundle.putString("user_name", mFirebaseAuth.getCurrentUser().getDisplayName());
-               // mFirebaseAnalytics.logEvent("names_of_users", bundle);
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Signed In Cancelled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.sign_cancel), Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -100,10 +103,30 @@ public class MainActivity extends AppCompatActivity {
         recipeViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipeList) {
-                recyclerView.setAdapter(new RecipeAdapter(getApplicationContext(), recipeList));
+                String id = mFirebaseAuth.getCurrentUser().getUid();
+                recyclerView.setAdapter(recipeAdapter);
+                recipeAdapter.setRecipeList(recipeList, id);
+                checkIfFavourite();
             }
         });
     }
+
+    public void checkIfFavourite() {
+        FavouriteDatabase database = FavouriteDatabase.getInstance(this);
+        final LiveData<List<FavouriteEntry>> recipeIds = database.dao().isFav(mFirebaseAuth.getCurrentUser().getUid(), "true");
+        recipeIds.observe(this, new Observer<List<FavouriteEntry>>() {
+            /**
+             * Called when the data is changed.
+             *
+             * @param favouriteEntries The new data
+             */
+            @Override
+            public void onChanged(@Nullable List<FavouriteEntry> favouriteEntries) {
+                recipeAdapter.checkIfFavourite(favouriteEntries);
+            }
+        });
+    }
+
 
     @Override
     public void onResume(){
@@ -117,5 +140,11 @@ public class MainActivity extends AppCompatActivity {
         if(mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

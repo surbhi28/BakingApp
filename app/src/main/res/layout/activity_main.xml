@@ -19,9 +19,9 @@
         android:background="?attr/colorPrimary"
         app:popupTheme="@style/AppTheme.PopupOverlay">
     </android.support.v7.widget.Toolbar>
-
     </android.support.design.widget.AppBarLayout>
-<android.support.v7.widget.RecyclerView
+
+    <android.support.v7.widget.RecyclerView
 
     android:id="@+id/recycler_view_recipes"
     android:layout_width="match_parent"

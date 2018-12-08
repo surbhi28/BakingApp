@@ -4,4 +4,6 @@
     <string name="add_widget">Add widget</string>
     <string name="sign_out">SignOut</string>
     <string name="message">Welcome </string>
+    <string name="sign_in">Signed In</string>
+    <string name="sign_cancel">Signed In Cancelled</string>
 </resources>
