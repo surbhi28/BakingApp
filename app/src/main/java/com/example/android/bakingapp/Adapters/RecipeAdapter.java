@@ -70,10 +70,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             public void onClick(View view) {
 
                 if (favourite) {
+                    favourite = false;
                     deleteFavouriteRecipe(recipeId);
                     holder.fav_button.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_favorite_off));
                     Toast.makeText(context, "Unmarked as Favourite", Toast.LENGTH_SHORT).show();
                 } else {
+                    favourite = true;
                     saveFavouriteRecipe(recipeId);
                     holder.fav_button.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_favorite_on));
                     Toast.makeText(context, "Marked as Favourite", Toast.LENGTH_SHORT).show();
@@ -147,7 +149,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             @Override
             public void run() {
                 database.dao().deleteFav(userId, recipeNo);
-                Log.d(LOG_TAG, "Recipe Deleted" + userId);
+                Log.d(LOG_TAG, "Recipe Deleted" + recipeNo);
             }
         });
 
