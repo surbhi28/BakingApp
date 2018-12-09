@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChanged(@Nullable List<FavouriteEntry> favouriteEntries) {
-                recipeAdapter.checkIfFavourite(favouriteEntries);
+                recipeAdapter.favouriteFetchedList(favouriteEntries);
             }
         });
     }

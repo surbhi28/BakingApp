@@ -107,7 +107,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         userId = id;
     }
 
-    public void checkIfFavourite(List<FavouriteEntry> data) {
+    public void favouriteFetchedList(List<FavouriteEntry> data) {
         list = data;
     }
 
