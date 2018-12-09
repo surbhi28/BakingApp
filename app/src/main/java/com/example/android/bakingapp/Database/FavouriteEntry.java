@@ -16,20 +16,20 @@ public class FavouriteEntry {
     private String userId;
 
     @ColumnInfo(name = "recipe_id")
-    private Integer recipeId;
+    private int recipeId;
 
     @ColumnInfo(name = "is_fav")
     private String isFav;
 
     @Ignore
-    public FavouriteEntry(String userId, Integer recipeId, String isFav) {
+    public FavouriteEntry(String userId, int recipeId, String isFav) {
         this.userId = userId;
         this.recipeId = recipeId;
         this.isFav = isFav;
 
     }
 
-    public FavouriteEntry(int id, String userId, Integer recipeId, String isFav) {
+    public FavouriteEntry(int id, String userId, int recipeId, String isFav) {
         this.id = id;
         this.userId = userId;
         this.recipeId = recipeId;
@@ -52,12 +52,11 @@ public class FavouriteEntry {
         this.userId = userId;
     }
 
-    public Integer getRecipeId() {
-        if (recipeId == null) return 0;
+    public int getRecipeId() {
         return recipeId;
     }
 
-    public void setRecipeId(Integer recipeId) {
+    public void setRecipeId(int recipeId) {
         this.recipeId = recipeId;
     }
 

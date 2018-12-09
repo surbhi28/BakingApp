@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
+    private static String id;
 
     @BindView(R.id.recycler_view_recipes)
     RecyclerView recyclerView;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
                     toolbar.setTitle(getString(R.string.message) + user.getDisplayName());
+                    id = user.getUid();
                     viewModal();
                     checkIfFavourite();
                 }else {
@@ -106,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         recipeViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipeList) {
-                String id = mFirebaseAuth.getCurrentUser().getUid();
                 recyclerView.setAdapter(recipeAdapter);
                 recipeAdapter.setRecipeList(recipeList, id);
 
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checkIfFavourite() {
-        final LiveData<List<FavouriteEntry>> recipeIds = database.dao().isFav(mFirebaseAuth.getCurrentUser().getUid(), "true");
+        final LiveData<List<FavouriteEntry>> recipeIds = database.dao().isFav(id, "true");
         recipeIds.observe(this, new Observer<List<FavouriteEntry>>() {
 
             @Override

@@ -62,13 +62,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.recipeName.setText(name);
         holder.noOfServings.setText("No of Servings " +String.valueOf(servings));
 
-        final Integer recipeId = recipeList.get(position).getId();
-        database = FavouriteDatabase.getInstance(context);
-        isFavourite(holder, position);
+        final int recipeId = recipeList.get(position).getId();
+        isFavourite(holder, recipeId);
 
         holder.fav_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (favourite) {
                     deleteFavouriteRecipe(recipeId);
                     holder.fav_button.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_favorite_off));
@@ -109,7 +109,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         list = data;
     }
 
-    public void isFavourite(RecipeViewHolder holder, int pos) {
+    public void isFavourite(RecipeViewHolder holder, int recipeId) {
 
         if (list == null) {
             favourite = false;
@@ -117,7 +117,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         } else {
             int no = list.size();
             for (int i = 0; i < no; i++) {
-                if (list.get(i).getRecipeId() == recipeList.get(pos).getId()) {
+                if (list.get(i).getRecipeId() == recipeId) {
                     favourite = true;
                     holder.fav_button.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_favorite_on));
                 } else {
@@ -128,7 +128,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
     }
 
-    public void saveFavouriteRecipe(final Integer recipeId) {
+    public void saveFavouriteRecipe(final int recipeId) {
+        database = FavouriteDatabase.getInstance(context);
         final FavouriteEntry entry = new FavouriteEntry(userId, recipeId, "true");
         AppExecutor.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -140,7 +141,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     }
 
-    public void deleteFavouriteRecipe(final Integer recipeNo) {
+    public void deleteFavouriteRecipe(final int recipeNo) {
+        database = FavouriteDatabase.getInstance(context);
         AppExecutor.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
