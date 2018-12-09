@@ -14,9 +14,9 @@ public interface FavouriteDao {
     @Insert
     void insertFav(FavouriteEntry favouriteEntry);
 
-    @Query("SELECT recipe_id FROM favourite WHERE user_id LIKE :userId AND is_fav LIKE :fav")
+    @Query("SELECT * FROM favourite WHERE user_id LIKE :userId AND is_fav LIKE :fav")
     LiveData<List<FavouriteEntry>> isFav(String userId, String fav);
 
     @Query("DELETE FROM favourite WHERE user_id LIKE :userId AND recipe_id = :recipeId")
-    void deleteFav(String userId, int recipeId);
+    void deleteFav(String userId, Integer recipeId);
 }

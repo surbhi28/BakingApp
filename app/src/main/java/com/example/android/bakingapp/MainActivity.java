@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static FirebaseAnalytics mFirebaseAnalytics;
     private FirebaseAuth mFirebaseAuth;
     private RecipeAdapter recipeAdapter;
+    private FavouriteDatabase database;
 
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        database = FavouriteDatabase.getInstance(this);
 
         ButterKnife.bind(this);
 
@@ -64,8 +66,9 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
-                    viewModal();
                     toolbar.setTitle(getString(R.string.message) + user.getDisplayName());
+                    viewModal();
+                    checkIfFavourite();
                 }else {
                     startActivityForResult(
                             AuthUI.getInstance()
@@ -106,20 +109,15 @@ public class MainActivity extends AppCompatActivity {
                 String id = mFirebaseAuth.getCurrentUser().getUid();
                 recyclerView.setAdapter(recipeAdapter);
                 recipeAdapter.setRecipeList(recipeList, id);
-                checkIfFavourite();
+
             }
         });
     }
 
     public void checkIfFavourite() {
-        FavouriteDatabase database = FavouriteDatabase.getInstance(this);
         final LiveData<List<FavouriteEntry>> recipeIds = database.dao().isFav(mFirebaseAuth.getCurrentUser().getUid(), "true");
         recipeIds.observe(this, new Observer<List<FavouriteEntry>>() {
-            /**
-             * Called when the data is changed.
-             *
-             * @param favouriteEntries The new data
-             */
+
             @Override
             public void onChanged(@Nullable List<FavouriteEntry> favouriteEntries) {
                 recipeAdapter.checkIfFavourite(favouriteEntries);
@@ -144,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         finish();
     }
 }
