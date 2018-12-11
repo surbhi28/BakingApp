@@ -114,7 +114,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void isFavourite(RecipeViewHolder holder, int recipeId) {
 
 
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             favourite = false;
             holder.fav_button.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_favorite_off));
         } else {

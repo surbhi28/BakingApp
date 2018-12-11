@@ -1,6 +1,5 @@
 package com.example.android.bakingapp;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -22,7 +21,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,10 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
 
-    public static String userName;
-    public static String userId;
-    public static List<FavouriteEntry> favouriteEntryListSaved;
-    public static List<Recipe> recipeListSaved;
+    public String userName;
+    public String userId;
 
     @BindView(R.id.recycler_view_recipes)
     RecyclerView recyclerView;
@@ -69,17 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         boolean isConnected = Network.getConnectivityStatus(MainActivity.this);
         if (isConnected) {
-            if (savedInstanceState == null) {
                 signInMethod();
-            } else {
-                recipeListSaved = savedInstanceState.getParcelableArrayList("RecipeList");
-                favouriteEntryListSaved = savedInstanceState.getParcelableArrayList("FavouriteList");
-                userId = savedInstanceState.getString("UserId");
-                userName = savedInstanceState.getString("UserName");
-                recyclerView.setAdapter(recipeAdapter);
-                recipeAdapter.favouriteFetchedList(favouriteEntryListSaved);
-                recipeAdapter.setRecipeList(recipeListSaved, userId);
-            }
         } else {
             Toast.makeText(this, "Check Network Connection", Toast.LENGTH_SHORT).show();
         }
@@ -93,11 +79,9 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
-                    String name = user.getDisplayName();
-                    userName = name;
+                    userName = user.getDisplayName();
                     toolbar.setTitle(getString(R.string.message) + " " + userName);
-                    String id = user.getUid();
-                    userId = id;
+                    userId = user.getUid();
                     viewModal();
                     checkIfFavourite();
                 }else {
@@ -137,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         recipeViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipeList) {
-                recipeListSaved = recipeList;
                 recyclerView.setAdapter(recipeAdapter);
                 recipeAdapter.setRecipeList(recipeList, userId);
 
@@ -146,41 +129,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checkIfFavourite() {
-        final LiveData<List<FavouriteEntry>> recipeIds = database.dao().isFav(userId, "true");
-        recipeIds.observe(this, new Observer<List<FavouriteEntry>>() {
-
+        FavouriteViewModel favouriteViewModel = ViewModelProviders.of(this).get(FavouriteViewModel.class);
+        favouriteViewModel.getFavourites().observe(this, new Observer<List<FavouriteEntry>>() {
             @Override
             public void onChanged(@Nullable List<FavouriteEntry> favouriteEntries) {
-                favouriteEntryListSaved = favouriteEntries;
                 recipeAdapter.favouriteFetchedList(favouriteEntries);
             }
         });
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("FavouriteList", (ArrayList<FavouriteEntry>) favouriteEntryListSaved);
-        outState.putParcelableArrayList("RecipeList", (ArrayList<Recipe>) recipeListSaved);
-        outState.putString("UserName", userName);
-        outState.putString("UserId", userId);
-
-    }
-
     @Override
     public void onResume(){
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
-    /*@Override
+    @Override
     public void onPause(){
         super.onPause();
         if(mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
-    */
 
     @Override
     public void onBackPressed() {

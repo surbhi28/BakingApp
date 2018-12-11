@@ -12,12 +12,15 @@ import android.view.MenuItem;
 
 import com.example.android.bakingapp.ModalClasses.Steps;
 import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 public class StepDetail extends AppCompatActivity {
 
     private static final String LOG_TAG = StepDetail.class.getName();
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +28,7 @@ public class StepDetail extends AppCompatActivity {
         setContentView(R.layout.steps_detail_activity);
 
         ActionBar actionBar = this.getSupportActionBar();
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -65,4 +69,5 @@ public class StepDetail extends AppCompatActivity {
                     return super.onOptionsItemSelected(item);
         }
     }
+
 }
