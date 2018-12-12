@@ -56,11 +56,6 @@ public class RecipeDetail extends AppCompatActivity implements RecipeDetailFragm
                 fragment.setTwoPane(mTwoPane);
                 manager.beginTransaction().add(R.id.container_one, fragment).commit();
 
-             /*   StepsDetailFragment stepsDetailFragment = new StepsDetailFragment();
-                stepsDetailFragment.setDescription(stepsList.get(position).getDescription());
-                stepsDetailFragment.setVideoURL(stepsList.get(position).getVideoURL());
-                manager.beginTransaction().add(R.id.container_two, stepsDetailFragment).commit();
-            */
             }
         }else {
             mTwoPane = false;
@@ -100,9 +95,9 @@ public class RecipeDetail extends AppCompatActivity implements RecipeDetailFragm
             ingredients = ingredientsList;
             addToWidget = IngredientListService.startActionChangeIngredient(this);
             if (addToWidget) {
-                Toast.makeText(this, "Added to Widget", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.added_to_widget), Toast.LENGTH_SHORT).show();
             } else
-                Toast.makeText(this, "Not Added to Widget", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.not_added_widget), Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

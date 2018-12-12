@@ -32,11 +32,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public static final String LOG_TAG = RecipeAdapter.class.getName();
 
     private Context context;
-    List<Recipe> recipeList;
+    List<Recipe> recipeList = new ArrayList<>();
     private FavouriteDatabase database;
     private Boolean favourite;
     private String userId;
-    private List<FavouriteEntry> list;
+    private List<FavouriteEntry> list = new ArrayList<>();
+
 
     public RecipeAdapter(Context context) {
         this.context = context;
@@ -63,6 +64,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.noOfServings.setText("No of Servings " +String.valueOf(servings));
 
         final int recipeId = recipeList.get(position).getId();
+
         isFavourite(holder, recipeId);
 
         holder.fav_button.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +92,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 intent.putParcelableArrayListExtra("RecipeList", new ArrayList<Parcelable>(recipeList));
                 intent.putParcelableArrayListExtra("IngredientsList",new ArrayList<Parcelable>(recipeList.get(holder.getAdapterPosition()).getIngredients()));
                 intent.putParcelableArrayListExtra("StepsList",new ArrayList<Parcelable>(recipeList.get(holder.getAdapterPosition()).getSteps()));
-                Log.d(LOG_TAG,"Value of StepsList " +recipeList.get(position).getSteps().get(1).getShortDescription());
+                //Log.d(LOG_TAG,"Value of StepsList " +recipeList.get(position).getSteps().get(1).getShortDescription());
                 context.startActivity(intent);
             }
         });
@@ -102,14 +104,25 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         return recipeList.size();
     }
 
-    public void setRecipeList(List<Recipe> recipeLists, String id) {
+    public void setRecipeList(List<Recipe> recipeLists) {
         recipeList = recipeLists;
-        userId = id;
+
+    }
+
+    public void clear() {
+        recipeList.clear();
+        list.clear();
     }
 
     public void favouriteFetchedList(List<FavouriteEntry> data) {
         list = data;
     }
+
+    public void setUserId(String id) {
+        userId = id;
+    }
+
+
 
     public void isFavourite(RecipeViewHolder holder, int recipeId) {
 

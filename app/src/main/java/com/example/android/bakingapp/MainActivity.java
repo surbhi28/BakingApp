@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.android.bakingapp.Adapters.RecipeAdapter;
@@ -21,6 +24,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,21 +33,22 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static FirebaseAnalytics mFirebaseAnalytics;
-    private FirebaseAuth mFirebaseAuth;
-    private RecipeAdapter recipeAdapter;
-    private FavouriteDatabase database;
-
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
+    private static final String LOG_TAG = MainActivity.class.getName();
 
-    public String userName;
+
+    public static String userName;
     public String userId;
 
     @BindView(R.id.recycler_view_recipes)
     RecyclerView recyclerView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    private static FirebaseAnalytics mFirebaseAnalytics;
+    private FirebaseAuth mFirebaseAuth;
+    private RecipeAdapter recipeAdapter;
+    private FavouriteDatabase database;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,34 +62,25 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this );
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recipeAdapter = new RecipeAdapter(getApplicationContext());
 
-        boolean isConnected = Network.getConnectivityStatus(MainActivity.this);
-        if (isConnected) {
-                signInMethod();
-        } else {
-            Toast.makeText(this, "Check Network Connection", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
-    public void signInMethod() {
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null){
+                if (user != null) {
                     userName = user.getDisplayName();
-                    toolbar.setTitle(getString(R.string.message) + " " + userName);
                     userId = user.getUid();
+                    toolbar.setTitle(getString(R.string.message) + " " + userName);
+                    recipeAdapter.setUserId(userId);
                     viewModal();
                     checkIfFavourite();
-                }else {
+                } else {
+                    signOutClean();
                     startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
@@ -93,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                                             new AuthUI.IdpConfig.GoogleBuilder().build(),
                                             new AuthUI.IdpConfig.EmailBuilder().build()))
                                     .build(),
-                            RC_SIGN_IN );
+                            RC_SIGN_IN);
 
                 }
             }
@@ -102,18 +98,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode , Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                String name = mFirebaseAuth.getCurrentUser().getDisplayName();
                 Toast.makeText(this, getResources().getString(R.string.sign_in), Toast.LENGTH_SHORT).show();
-                mFirebaseAnalytics.setUserProperty("user_name",name);
+                mFirebaseAnalytics.setUserProperty("user_name", userName);
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, getResources().getString(R.string.sign_cancel), Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     public void viewModal() {
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<Recipe> recipeList) {
                 recyclerView.setAdapter(recipeAdapter);
-                recipeAdapter.setRecipeList(recipeList, userId);
+                recipeAdapter.setRecipeList(recipeList);
 
             }
         });
@@ -137,23 +138,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
-    public void onResume(){
-        super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-    }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
-        if(mAuthStateListener != null) {
+        if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
 
+    public void signOutClean() {
+        recipeAdapter.clear();
+    }
+
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_sign_out, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out:
+                if (mFirebaseAuth.getCurrentUser() != null) {
+                    AuthUI.getInstance().signOut(this);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

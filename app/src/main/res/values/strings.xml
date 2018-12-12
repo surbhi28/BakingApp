@@ -6,4 +6,11 @@
     <string name="message">Welcome </string>
     <string name="sign_in">Signed In</string>
     <string name="sign_cancel">Signed In Cancelled</string>
+    <string name="favourite_label_button">Favourite</string>
+    <string name="recipe">Recipe</string>
+    <string name="no_of_servings">No of Servings</string>
+    <string name="ingredients_heading">INGREDIENTS</string>
+    <string name="steps_heading">STEP DESCRIPTION</string>
+    <string name="added_to_widget">Added To Widget</string>
+    <string name="not_added_widget">Not Added To Widget</string>
 </resources>

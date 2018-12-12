@@ -15,7 +15,7 @@
             android:textSize="22sp"
             android:layout_margin="5dp"
             android:textColor="#000000"
-            android:text="INGREDIENTS"/>
+            android:text="@string/ingredients_heading" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/ingredients_recycler_view"
@@ -29,7 +29,7 @@
             android:textSize="22sp"
             android:layout_margin="5dp"
             android:textColor="#000000"
-            android:text="RECIPE STEP DESCRIPTION"/>
+            android:text="@string/steps_heading" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/steps_recycler_view"

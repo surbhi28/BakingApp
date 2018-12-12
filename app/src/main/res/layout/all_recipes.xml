@@ -21,7 +21,7 @@
         android:textSize="30sp"
         android:layout_centerInParent="true"
         android:textColor="#000000"
-        tools:text="Recipe" />
+        tools:text="@string/recipe" />
 
         <TextView
             android:id="@+id/no_ofServings"
@@ -30,13 +30,14 @@
             android:layout_below="@+id/recipe_name"
             android:layout_centerInParent="true"
             android:textSize="13sp"
-            tools:text="No of Servings"
+            tools:text="@string/no_of_servings"
             android:textColor="#000000"/>
 
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="@string/favourite_label_button" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

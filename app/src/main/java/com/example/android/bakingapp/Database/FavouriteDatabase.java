@@ -10,7 +10,7 @@ import android.util.Log;
 public abstract class FavouriteDatabase extends RoomDatabase {
     private static final String LOG_TAG = FavouriteDatabase.class.getName();
     private static final Object LOCK = new Object();
-    private static final String DATABASE_NAME = "favouriterecipes";
+    private static final String DATABASE_NAME = "favourite";
     private static FavouriteDatabase sInstance;
 
     public static FavouriteDatabase getInstance(Context context) {

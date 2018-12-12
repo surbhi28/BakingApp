@@ -62,17 +62,6 @@ public class StepsDetailFragment extends Fragment {
 
     }
 
-    /*   @Override
-       public void onCreate(Bundle savedInstanceState) {
-           super.onCreate(savedInstanceState);
-           setRetainInstance(true);
-       }
-
-       @Override
-       public void onViewStateRestored(Bundle savedInstanceState) {
-           super.onViewStateRestored(savedInstanceState);
-       }
-   */
     @Override
     public void onStart() {
         super.onStart();

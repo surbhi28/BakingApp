@@ -1,26 +1,18 @@
 package com.example.android.bakingapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import com.example.android.bakingapp.ModalClasses.Steps;
-import com.firebase.ui.auth.AuthUI;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 public class StepDetail extends AppCompatActivity {
 
     private static final String LOG_TAG = StepDetail.class.getName();
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +20,7 @@ public class StepDetail extends AppCompatActivity {
         setContentView(R.layout.steps_detail_activity);
 
         ActionBar actionBar = this.getSupportActionBar();
-        mFirebaseAuth = FirebaseAuth.getInstance();
+
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -49,25 +41,6 @@ public class StepDetail extends AppCompatActivity {
             fragmentManager.beginTransaction().add(R.id.container_two, stepsDetailFragment).commit();
         }
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_sign_out,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
-            case R.id.sign_out:
-                AuthUI.getInstance().signOut(this);
-                startActivity(new Intent(this,MainActivity.class));
-                return true;
-                default:
-                    return super.onOptionsItemSelected(item);
-        }
     }
 
 }

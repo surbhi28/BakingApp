@@ -21,10 +21,15 @@ public class FavouriteViewModel extends AndroidViewModel {
     public FavouriteViewModel(@NonNull Application application) {
         super(application);
         FavouriteDatabase database = FavouriteDatabase.getInstance(this.getApplication());
-        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
-        String id = mFirebaseAuth.getCurrentUser().getUid();
-        Log.d(LOG_TAG, "Actively retrieving favourites from database");
-        favourites = database.dao().isFav(id, "true");
+        FirebaseAuth mFireBaseAuth = FirebaseAuth.getInstance();
+        if (mFireBaseAuth != null) {
+            String id = mFireBaseAuth.getCurrentUser().getUid();
+            Log.d(LOG_TAG, "User Present" + id);
+            Log.d(LOG_TAG, "Actively retrieving favourites from database");
+            favourites = database.dao().isFav(id, "true");
+        } else {
+            Log.d(LOG_TAG, "No User");
+        }
     }
 
     public LiveData<List<FavouriteEntry>> getFavourites() {
